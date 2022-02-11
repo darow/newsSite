@@ -1,4 +1,8 @@
-{% if news %}
-    {{ news.title|upper }}<br>
-    {{ news.text }}
-{% endif %}
+{% extends 'news/base.html' %}
+
+{% block content %}
+    {% if news %}
+        {{ news.title|upper }}<br>
+        {{ news.text }}
+    {% endif %}
+{% endblock %}
