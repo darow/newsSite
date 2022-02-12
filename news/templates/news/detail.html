@@ -1,4 +1,4 @@
-{% extends 'news/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     {% if news %}
@@ -12,10 +12,7 @@
                     {% csrf_token %}
                         <input type="hidden" name="news_id" required="" id="id_news_id" value={{ news.id }}>
                         <input type="text" name="new_comment" maxlength="100" required="" id="id_new_comment">
-{#                    <input type="hidden" for="news_id" value={{ news.id }}>#}
-{#                    <label for="new_comment">Новый комментарий: </label>#}
-{#                    <input id="new_comment" type="text" name="new_comment" value="">#}
-{#                                    {{ form }}#}
+{#                        {{ form }}#}
                     <input type="submit" value="Отправить">
                 </form>
             </div>

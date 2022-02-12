@@ -19,7 +19,8 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarsExample02">
-                    <ul class="navbar-nav me-auto">
+                        <ul class="navbar-nav me-auto">
+
                         {#          <li class="nav-item">#}
                         {#            <a class="nav-link active" aria-current="page" href="#">Home</a>#}
                         {#          </li>#}
@@ -27,6 +28,13 @@
                         {#            <a class="nav-link" href="#">Link</a>#}
                         {#          </li>#}
                     </ul>
+                    {% if user.is_authenticated %}
+                        <h5 class="text-white">{{ user.username }}</h5>
+                        <a class="btn btn-danger mx-2" href="{% url 'users:logout' %}">Выйти</a>
+                    {% else %}
+                        <a class="btn btn-success mx-2" href="{% url 'users:signup' %}">Зарегистрироваться</a>
+                        <a class="btn btn-secondary mx-2" href="{% url 'users:login' %}">Войти</a>
+                    {% endif %}
                     {#        <form>#}
                     {#          <input class="form-control" type="text" placeholder="Search" aria-label="Search">#}
                     {#        </form>#}

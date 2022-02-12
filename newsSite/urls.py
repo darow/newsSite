@@ -23,4 +23,5 @@ urlpatterns = [
     path('', lambda request: redirect(reverse('news:news_list'), permanent=False)),
     path('news/', include('news.urls')),
     path('admin/', admin.site.urls),
-]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('users/', include('users.urls')),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
