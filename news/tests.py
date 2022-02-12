@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from news.models import News
+from news.models import News, Comment
 
 
 def create_news(news_text, days):
@@ -12,7 +12,24 @@ def create_news(news_text, days):
     return News.objects.create(text=news_text, create_date=time)
 
 
+def create_comment(comment_text, news):
+    return Comment.objects.create(text=comment_text, news=news)
+
+
 class NewsDetailViewTest(TestCase):
+    def test_no_comments(self):
+        news = create_news('test_news', -1)
+        response = self.client.get(reverse('news:detail', args=(news.id,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['comment_list'], [])
+
+    def test_one_comment(self):
+        news = create_news('test_news', -1)
+        comment = create_comment('comment', news)
+        response = self.client.get(reverse('news:detail', args=(news.id,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['comment_list'], [comment])
+
     def test_future_news(self):
         future_news = create_news('future_news', 6)
         response = self.client.get(reverse('news:detail', args=(future_news.id,)))

@@ -5,7 +5,7 @@
         {% for news in news_list  %}
             <div class="row py-1">
                 <div class="col news-link">
-                    <a class="text-white" href="{% url 'news:detail' news.id %}">{{ news.title }}</a>
+                    <a class="text-secondary" href="{% url 'news:detail' news.id %}">{{ news.title }}</a>
                 </div>
             </div>
         {% endfor %}

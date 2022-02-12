@@ -4,5 +4,36 @@
     {% if news %}
         {{ news.title|upper }}<br>
         {{ news.text }}
+
+        <div class="container py-5">
+            <h1>Комментарии</h1>
+            <div class="container py-5">
+                <form action="{% url 'news:new_comment' %}" method="post">
+                    {% csrf_token %}
+                        <input type="hidden" name="news_id" required="" id="id_news_id" value={{ news.id }}>
+                        <input type="text" name="new_comment" maxlength="100" required="" id="id_new_comment">
+{#                    <input type="hidden" for="news_id" value={{ news.id }}>#}
+{#                    <label for="new_comment">Новый комментарий: </label>#}
+{#                    <input id="new_comment" type="text" name="new_comment" value="">#}
+{#                                    {{ form }}#}
+                    <input type="submit" value="Отправить">
+                </form>
+            </div>
+
+            <div class="container py-5">
+            {% for comment in comment_list %}
+                <div class="row">
+                    <div class="col">
+                        <span>{{ comment.text }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+
+
+
+
+        </div>
     {% endif %}
 {% endblock %}
