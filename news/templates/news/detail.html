@@ -1,30 +1,51 @@
 {% extends 'base.html' %}
+{% load news_site_tags %}
 
 {% block content %}
     {% if news %}
-        {{ news.title|upper }}<br>
-        {{ news.text }}
+        {% if not news.admitted and user|has_group:"moderators" %}
+            <a class="btn btn-success text-light" href="{% url 'news:admit' news.id%}">Опубликовать новость</a>
+        {% endif %}
+        <h3>{{ news.title|upper }}</h3><br>
+        {% if news.photo %}
+            <img height="400px" src="{{ news.photo.url }}"><br>
+        {% endif %}
+        <p>{{ news.text }}</p>
+        <span class="fw-bold">Автор: {{ news.author }}</span>
 
         <div class="container py-5">
-            <h1>Комментарии</h1>
+            <h3>Комментарии</h3>
             <div class="container py-5">
                 <form action="{% url 'news:new_comment' %}" method="post">
                     {% csrf_token %}
-                        <input type="hidden" name="news_id" required="" id="id_news_id" value={{ news.id }}>
-                        <input type="text" name="new_comment" maxlength="100" required="" id="id_new_comment">
-{#                        {{ form }}#}
-                    <input type="submit" value="Отправить">
+                    <input type="hidden" name="news_id" required="" id="id_news_id" value={{ news.id }}>
+                    <input type="text" name="new_comment" maxlength="100" required="" id="id_new_comment">
+                    {#                        {{ form }}#}
+                    <input type="submit" value="Отправить на проверку">
                 </form>
             </div>
 
             <div class="container py-5">
-            {% for comment in comment_list %}
-                <div class="row">
-                    <div class="col">
-                        <span>{{ comment.text }}</span>
+                {% for comment in comment_list %}
+                    {% if comment.admitted or comment.author == user or user|has_group:"moderators" %}
+                    <div class="row">
+                        <div class="col">
+                            {% if comment.author %}
+                                <span>{{ comment.author }}</span>
+                            {% else %}
+                                <span>Гость</span>
+                            {% endif %}
+                            {% if not user.is_anonymous and comment.author == user and not comment.admitted %}
+                                <span class="text-danger">(Не проверено модерацией)</span>
+                            {% endif %}
+                            {% if not comment.admitted and user|has_group:"moderators" %}
+                                <a class="btn btn-success text-light" href="{% url 'news:admit_comment' comment.id%}">Опубликовать</a>
+                            {% endif %}
+                            <p class="ms-4">{{ comment.text }}</p>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
 

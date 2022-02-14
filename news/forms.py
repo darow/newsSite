@@ -1,4 +1,7 @@
 from django import forms
+from django.forms import Textarea
+
+from news.models import News
 
 
 class NewCommentForm(forms.Form):

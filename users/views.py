@@ -1,15 +1,23 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.contrib.auth.models import User, Group
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 
-# Sign Up View
+def toggle_group(request, group_name):
+    group = Group.objects.get(name=str(group_name))
+    if group in request.user.groups.all():
+        request.user.groups.remove(group)
+    else:
+        request.user.groups.add(group)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('users:login')
@@ -37,13 +45,6 @@ def login_view(request):
             'form': AuthenticationForm,
         }
         return render(request, 'users/auth.html', context)
-
-
-# class SignUpView(CreateView):
-#     # model = User
-#     form_class = SignupForm
-#     template_name = 'users/signup.html'
-#     success_url = reverse('news:news_list')
 
 
 # @csrf_protect

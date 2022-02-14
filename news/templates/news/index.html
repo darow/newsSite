@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    {% if page_title %}
+        <h3>{{ page_title }}</h3>
+    {% endif %}
     {% if news_list  %}
+        <div class="container-fluid py-3">
         {% for news in news_list  %}
             <div class="row py-1">
                 <div class="col news-link">
-                    <a class="text-secondary" href="{% url 'news:detail' news.id %}">{{ news.title }}</a>
+                    {% if moderate_page  %}
+                        <a class="btn btn-success text-light" href="{% url 'news:admit' news.id%}">Опубликовать</a>
+                    {% endif %}
+                    <a class=" text-decoration-none fw-bold font-size-lg" href="{% url 'news:detail' news.id %}">{{ news.title }}</a>
                 </div>
             </div>
         {% endfor %}
+        </div>
         <div class="pagination pt-5">
             <span class="step-links">
                 {% if page_obj.has_previous %}

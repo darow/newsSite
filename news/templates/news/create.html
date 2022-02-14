@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Создание новости</h3>
+    <form action="{% url 'news:create' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <label for="title">Заголовок</label>
+        <p>{{ form.title }}</p>
+        <label for="photo">Фото</label>
+        <p>{{ form.photo }}</p>
+        <label for="text">Текст</label>
+        <p>{{ form.text }}</p>
+        <div class="d-none">{{ form.author }}</div>
+        {{ form.non_field_errors }}
+
+        {#                {{ form.as_p  }}#}
+        <input type="submit" value="Отправить">
+    </form>
+{% endblock %}
