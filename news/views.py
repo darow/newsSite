@@ -5,6 +5,7 @@ from django.http import HttpResponse, Http404
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views import generic
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import CreateView, FormView
 
 from .models import News, Comment
@@ -27,6 +28,16 @@ def new_comment_view(request):
             return HttpResponse("form is not valid")
     else:
         return HttpResponse("Сюда нельзя запросом не post")
+
+
+def search_view(request):
+    value = request.GET.get('search_query', '')
+    news = News.objects.filter(create_date__lte=timezone.now()).filter(title__icontains=value).filter(admitted=True).order_by('-create_date')
+    context = {
+        'page_title': 'Результат поиска "' + str(value) + '" в названиях новостей',
+        'news_list': news,
+    }
+    return render(request, 'news/index.html', context)
 
 
 class ModerateNewsListView(LoginRequiredMixin, generic.ListView):
@@ -98,7 +109,6 @@ class CreateNews(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         news = form.save(commit=False)
         news.author = self.request.user
-        print(news)
         return super().form_valid(form)
 
 

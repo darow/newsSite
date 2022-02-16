@@ -20,7 +20,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarsExample02">
+            <div class="collapse navbar-collapse" id="navbarsExample">
                 <ul class="navbar-nav me-auto">
                     {% if request.user|has_group:"authors" %}
                         <li class="nav-item">
@@ -40,14 +40,12 @@
                     {% endif %}
                     {% if request.user|has_group:"moderators" %}
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'news:moderate_list' %}">Новости для модерации</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'news:moderate_list' %}">Новости
+                                для модерации</a>
                         </li>
                     {% endif %}
-
-                    {#                              <li class="nav-item">#}
-                    {#                                <a class="nav-link" href="#">Link</a>#}
-                    {#                              </li>#}
                 </ul>
+
                 <div class="mx-1">
                     {% if user|has_group:"authors" %}
                         <span class="text-success"> Автор </span>
@@ -66,21 +64,27 @@
 
                 {% if user.is_authenticated %}
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" style="margin-right: 200px;" type="button"
+                        <button class="btn btn-secondary dropdown-toggle me-1" type="button"
                                 id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                             {{ user.username }}
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="{% url 'users:toggle_group' 'authors' %}">Изменить роль Автор</a></li>
-                            <li><a class="dropdown-item" href="{% url 'users:toggle_group' 'moderators' %}">Изменить роль Модератор</a></li>
-                            <li><a class="btn btn-danger mx-2" href="{% url 'users:logout' %}">Выйти</a></li>
+                            <li><a class="dropdown-item" href="{% url 'users:toggle_group' 'authors' %}">Изменить роль
+                                Автор</a></li>
+                            <li><a class="dropdown-item" href="{% url 'users:toggle_group' 'moderators' %}">Изменить
+                                роль Модератор</a></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}">Выйти</a></li>
                         </ul>
                     </div>
                 {% else %}
                     <a class="btn btn-success mx-2" href="{% url 'users:signup' %}">Зарегистрироваться</a>
                     <a class="btn btn-secondary mx-2" href="{% url 'users:login' %}">Войти</a>
                 {% endif %}
+                <form action="{% url 'news:search' %}" class="navbar-nav form-inline mt-md-0", method="get">
+                    <input id="search_query" name="search_query" class="form-control mr-sm-2" type="text" placeholder="Название статьи" aria-label="Search">
+                    <button class="btn btn-outline-success ms-1 my-sm-0" type="submit">Поиск</button>
+                </form>
             </div>
         </div>
     </nav>

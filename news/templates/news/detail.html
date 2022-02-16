@@ -1,18 +1,61 @@
 {% extends 'base.html' %}
 {% load news_site_tags %}
+{% load static %}
 
 {% block content %}
     {% if news %}
-        {% if not news.admitted and user|has_group:"moderators" %}
-            <a class="btn btn-success text-light" href="{% url 'news:admit' news.id%}">Опубликовать новость</a>
-        {% endif %}
-        <h3>{{ news.title|upper }}</h3><br>
-        {% if news.photo %}
-            <img height="400px" src="{{ news.photo.url }}"><br>
-        {% endif %}
-        <p>{{ news.text }}</p>
-        <span class="fw-bold">Автор: {{ news.author }}</span>
 
+        <head>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            {#            <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>#}
+            {#            <script src="https://mrrio.github.io/jsPDF/dist/jspdf.debug.js"></script>#}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+
+            <script src="{% static '/news/html2canvas.js' %}"></script>
+            {#            <script src="{% static '/jspdf.min.js' %}"></script>#}
+
+        </head>
+
+        <script type="module">
+
+        </script>
+
+        <script type="module">
+
+            let news = document.querySelector('#news')
+
+            html2canvas(news,
+                {backgroundColor: '#FFFFFF',
+                background:"#fafafa",
+                width: 595,
+                height: 842,
+                }).then(canvas => {
+                let pdf = new jsPDF('p', 'pt', 'letter');
+                pdf.addImage(canvas, 'JPEG', 10, 10, 595, 842, '');
+                let savePdfBtn = document.getElementById('savePdfBtn')
+
+                savePdfBtn.onclick = function savePDF() {
+                    pdf.save('{{ news.title }}' + '.pdf');
+                }
+            });
+
+
+        </script>
+
+        {% if not news.admitted and user|has_group:"moderators" %}
+            <a class="btn btn-success text-light" href="{% url 'news:admit' news.id %}">Опубликовать новость</a>
+        {% endif %}
+
+        <div id="news">
+            <h3 id="news-title">{{ news.title|upper }}</h3><br>
+            {% if news.photo %}
+                <img id="news-photo" height="400px" src="{{ news.photo.url }}"><br>
+            {% endif %}
+            <p id="news-text">{{ news.text }}</p>
+            <span class="fw-bold">Автор: {{ news.author }}</span>
+        </div>
+        <div id="editor"></div>
+        <a type="button" class="btn btn-danger text-light" id="savePdfBtn">Скачать PDF</a>
         <div class="container py-5">
             <h3>Комментарии</h3>
             <div class="container py-5">
@@ -28,30 +71,26 @@
             <div class="container py-5">
                 {% for comment in comment_list %}
                     {% if comment.admitted or comment.author == user or user|has_group:"moderators" %}
-                    <div class="row">
-                        <div class="col">
-                            {% if comment.author %}
-                                <span>{{ comment.author }}</span>
-                            {% else %}
-                                <span>Гость</span>
-                            {% endif %}
-                            {% if not user.is_anonymous and comment.author == user and not comment.admitted %}
-                                <span class="text-danger">(Не проверено модерацией)</span>
-                            {% endif %}
-                            {% if not comment.admitted and user|has_group:"moderators" %}
-                                <a class="btn btn-success text-light" href="{% url 'news:admit_comment' comment.id%}">Опубликовать</a>
-                            {% endif %}
-                            <p class="ms-4">{{ comment.text }}</p>
+                        <div class="row">
+                            <div class="col">
+                                {% if comment.author %}
+                                    <span>{{ comment.author }}</span>
+                                {% else %}
+                                    <span>Гость</span>
+                                {% endif %}
+                                {% if not user.is_anonymous and comment.author == user and not comment.admitted %}
+                                    <span class="text-danger">(Не проверено модерацией)</span>
+                                {% endif %}
+                                {% if not comment.admitted and user|has_group:"moderators" %}
+                                    <a class="btn btn-success text-light"
+                                       href="{% url 'news:admit_comment' comment.id %}">Опубликовать</a>
+                                {% endif %}
+                                <p class="ms-4">{{ comment.text }}</p>
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
                 {% endfor %}
             </div>
-        </div>
-
-
-
-
         </div>
     {% endif %}
 {% endblock %}
