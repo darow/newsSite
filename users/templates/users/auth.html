@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <h3>Вход</h3>
-    <form action="{% url 'users:login' %}" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Войти">
-    </form>
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/style.css' %}">
+    <div class="login-page">
+        <div class="form">
+            <form class="login-form" action="{% url 'users:login' %}" method="POST"> {% csrf_token %}
+                <h3 class="text-center mb-3">Вход</h3>
+                {{ form }}
+                <input type="submit" value="Войти">
+                <p class="message">Не зарегистрированы? <a href="{% url 'users:signup' %}">Создать аккаунт</a></p>
+            </form>
+        </div>
+    </div>
 {% endblock %}

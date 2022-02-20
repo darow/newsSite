@@ -7,10 +7,18 @@ from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
 from django.views.generic import CreateView
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def toggle_group(request, group_name):
-    group = Group.objects.get(name=str(group_name))
+    try:
+        group = Group.objects.get(name=str(group_name))
+    except Group.DoesNotExist:
+        if ((group_name == 'authors') or (group_name == 'moderators')):
+            group = Group.objects.create(name=group_name)
+        else:
+            raise Group.DoesNotExist
+
     if group in request.user.groups.all():
         request.user.groups.remove(group)
     else:
@@ -19,6 +27,7 @@ def toggle_group(request, group_name):
 
 
 class SignUpView(CreateView):
+    print(UserCreationForm)
     form_class = UserCreationForm
     success_url = reverse_lazy('users:login')
     template_name = 'users/signup.html'
@@ -38,7 +47,7 @@ def login_view(request):
             else:
                 return HttpResponse("НЕ вошли")
         else:
-            return HttpResponse("Форма не валидная")
+            return render(request, 'users/auth.html', {'form': form})
 
     else:
         context = {
