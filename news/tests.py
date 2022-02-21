@@ -7,9 +7,9 @@ from django.utils import timezone
 from news.models import News, Comment
 
 
-def create_news(news_text, days):
+def create_news(news_text, days, title="default_title", admitted=True):
     time = timezone.now() + datetime.timedelta(days=days)
-    return News.objects.create(text=news_text, create_date=time)
+    return News.objects.create(title=title, text=news_text, create_date=time, admitted=admitted)
 
 
 def create_comment(comment_text, news):
