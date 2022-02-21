@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*q+)pzdw+_@jb+j@n4=xwvzsb491m2-cn!a@ni)zyc(1uj$55y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['news-site-gaz.herokuapp.com']
+ALLOWED_HOSTS = ['news-site-gaz.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -134,5 +134,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import django_heroku
-django_heroku.settings(locals())
+# import django_heroku
+# django_heroku.settings(locals())

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="/{% static 'users/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.scheme }}://{{ request.get_host }}/{% static 'users/css/style.css' %}">
     <div class="login-page">
         <div class="form">
             <form class="login-form" action="{% url 'users:login' %}" method="POST"> {% csrf_token %}
