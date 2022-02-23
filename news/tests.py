@@ -17,18 +17,22 @@ def create_comment(comment_text, news):
 
 
 class NewsDetailViewTest(TestCase):
-    def test_no_comments(self):
-        news = create_news('test_news', -1)
-        response = self.client.get(reverse('news:detail', args=(news.id,)))
-        self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(response.context['comment_list'], [])
-
     def test_one_comment(self):
         news = create_news('test_news', -1)
         comment = create_comment('comment', news)
         response = self.client.get(reverse('news:detail', args=(news.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(response.context['comment_list'], [comment])
+        print(0)
+        print(response.context['comment_list'])
+
+    def test_no_comments(self):
+        news = create_news('test_news', -1)
+        response = self.client.get(reverse('news:detail', args=(news.id,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['comment_list'], [])
+        print(1)
+        print(response.context['comment_list'])
 
     def test_future_news(self):
         future_news = create_news('future_news', 6)
@@ -44,11 +48,6 @@ class NewsDetailViewTest(TestCase):
 
 
 class NewsIndexViewTests(TestCase):
-    def test_no_news(self):
-        response = self.client.get(reverse('news:news_list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'No news are available now')
-        self.assertQuerysetEqual(response.context['news_list'], [])
 
     def test_past_news(self):
         news = create_news('past_news', days=-30)
@@ -57,6 +56,16 @@ class NewsIndexViewTests(TestCase):
             response.context['news_list'],
             [news],
         )
+        print("news", response.context['news_list'])
+
+
+    def test_no_news(self):
+        response = self.client.get(reverse('news:news_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'No news are available now')
+        self.assertQuerysetEqual(response.context['news_list'], [])
+        print("nonews", response.context['news_list'])
+
 
     def test_future_news(self):
         news = create_news('future_news', days=20)
